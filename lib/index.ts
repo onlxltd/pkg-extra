@@ -13,7 +13,7 @@ import {
   copyFileSync,
 } from 'fs-extra';
 import minimist from 'minimist';
-import { need, system } from 'pkg-fetch';
+import { need, system } from '../../pkg-fetch-extra/lib-es5';
 import path from 'path';
 
 import { log, wasReported } from './log';
@@ -579,7 +579,7 @@ export async function exec(argv2: string[]) {
         await remove(signedBinaryPath);
         copyFileSync(f.binaryPath, signedBinaryPath);
         log.info(`Codesigning '${target.output}' at '${cCodesignAuth}'`);
-        execSync(`codesign --sign "${cCodesignAuth}" ${signedBinaryPath}`);
+        execSync(`codesign --sign "${cCodesignAuth}" ${signedBinaryPath} --force`);
         f.binaryPath = signedBinaryPath;
       }
 
@@ -679,7 +679,7 @@ export async function exec(argv2: string[]) {
           // sign executable ad-hoc to workaround the new mandatory signing requirement
           // users can always replace the signature if necessary
           log.info(`Codesigning '${target.output}' at '${cCodesignAuth}'`);
-          execSync(`codesign --sign "${cCodesignAuth}" ${target.output}`);
+          execSync(`codesign --sign "${cCodesignAuth}" ${target.output} --force`);
         } else if (target.arch === 'arm64') {
           log.warn('Unable to sign the macOS executable on non-macOS host', [
             'Due to the mandatory code signing requirement, before the',
